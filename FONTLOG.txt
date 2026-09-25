@@ -1,0 +1,96 @@
+FONTLOG pour Témoin
+-------------------
+
+Ce fichier porte l'historique du projet Témoin, selon la convention
+recommandée par SIL pour les polices publiées sous Open Font License.
+
+
+Informations de base
+--------------------
+
+Témoin est une version modifiée d'Atkinson Hyperlegible Next, dessinée par
+Elliott Scott, Megan Eiswerth, Linus Boman et Theodore Petrosky, avec Letters
+from Sweden, pour le Braille Institute of America, et publiée sous SIL Open
+Font License 1.1.
+
+Le Braille Institute of America n'a ni approuvé, ni soutenu, ni relu cette
+version.
+
+L'Observatoire de l'Expérimentation Animale a produit cette version pour son
+site et ses documents. Elle ajoute un zéro contextuel, un système de coupes de
+terminaison, 44 petites capitales, cinq tables d'espacement et de crénage,
+l'espace fine insécable U+202F, un bras au O capitale et un partage de la
+barre médiane du F et de l'E dans les graisses grasses.
+
+Le projet ne revendique ni l'accessibilité ni la lisibilité de Témoin. Les
+propriétés de la police de base ne se transmettent pas automatiquement à une
+version modifiée, et l'OXA ne les a pas fait vérifier.
+
+  Quatre fichiers variables, romain et italique, 1000 unités par em
+  Deux TTF, axe de graisse wght 200 à 800, défaut 400, sept instances
+  nommées d'ExtraLight à ExtraBold, 439 glyphes
+  Deux WOFF2 pour le web, axe 400 à 800, défaut 400, cinq instances
+  nommées de Regular à ExtraBold, 311 glyphes, sous-ensemblés au latin
+  français
+
+
+Historique des versions
+-----------------------
+
+1.000  25 septembre 2026  Observatoire de l'Expérimentation Animale
+
+  Première publication. Fork d'Atkinson Hyperlegible Next 2.001, de
+  novembre 2024.
+
+  Dessin
+    Zéro contextuel, jeu stylistique ss01, libellé Unslashed zero
+    Coupes de terminaison tournées de 20 degrés, l'angle de la diagonale du A
+    44 petites capitales dérivées des capitales, features smcp et c2sc
+    Espace fine insécable U+202F
+    Bras du O capitale, sur la seule source romaine
+    Barre médiane du F et de l'E partagée dans les deux graisses grasses
+    Barre montante du t, queue du j, opérateurs mathématiques remontés
+    Le 1 rendu plat, le 4, le 7 et le 9 plongeants
+
+    Cinq tables d'espacement et de crénage produites par mesure, sur le
+    voisinage du F, les pieds, les bouts de terminaison, les contacts et
+    deux familles de réglage. Elles sont bornées par ce qu'on peut
+    refermer sans passer sous la police de base.
+
+  Identité et licence
+    Les sept champs d'identité d'Atkinson remplacés par ceux de l'OXA
+    Version repartie à 1.000, achVendID à OXA
+    Reconnaissance de la police de base en name ID 10
+    Notice OFL en name ID 0, 13 et 14
+    Adresse du dépôt en name ID 11
+    Nom d'affichage accentué posé comme nom localisé français,
+    name ID 1 et 4, plateforme Windows, langue 0x040C
+
+  Fichiers
+    Deux TTF variables, 200 à 800, répertoire complet
+    Deux WOFF2 variables, 400 à 800, sous-ensemblés au latin français
+    Date de modification des binaires fixée au 25 septembre 2026 par
+    SOURCE_DATE_EPOCH : la chaîne les reproduit à l'octet
+
+  Vérification
+    fontbakery 1.1.0, check-googlefonts, sur les deux TTF avec OFL.txt
+    à côté : 0 FAIL, 0 ERROR, 19 WARN, 13 INFO, 173 SKIP, 250 PASS.
+    Sans accès au réseau, 14 contrôles qui l'appellent passent en ERROR.
+    check_final.py, dix sections, 0 anomalie.
+
+
+Remerciements
+-------------
+
+Les dessinateurs de la police de base sont crédités ci-dessus. Cette mention
+reconnaît leur contribution, ce que la clause 4 de l'OFL autorise
+explicitement, et ne vaut ni approbation ni soutien de leur part.
+
+N: Observatoire de l'Expérimentation Animale
+W: https://oxanimale.fr
+D: Version modifiée Témoin
+
+N: Elliott Scott, Megan Eiswerth, Linus Boman, Theodore Petrosky,
+   Letters from Sweden
+W: https://github.com/googlefonts/atkinson-hyperlegible-next
+D: Atkinson Hyperlegible Next, la police de base

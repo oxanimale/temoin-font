@@ -1,0 +1,17 @@
+# Produits de compilation. Les deux TTF publiés, dans fonts/, font exception.
+*.ttf
+!/fonts/*.ttf
+*.otf
+instance_ufo/
+master_ufo/
+variable_ttf/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Systèmes de fichiers
+.DS_Store
+Thumbs.db

@@ -1,0 +1,93 @@
+# La chaine officielle appliquee a Temoin, mesuree au soixante-deuxieme tour.
+#
+# CE FICHIER NE TRANCHE PAS LE POINT 10. Il rend la chaine du depot d'origine
+# executable sur les sources du projet, pour que l'arbitrage se fasse sur une
+# mesure et non sur une lecture de Makefile. La chaine qui fait foi reste a
+# decider par Nicolas.
+#
+# Lancement, depuis le repertoire qui contient ce fichier, dans un venv qui
+# porte gftools et fontmake :
+#
+#   PATH=/chemin/du/venv/bin:$PATH gftools builder config-temoin.yaml
+#
+# `fontmake` doit etre dans le PATH : gftools builder l'appelle par son nom et
+# non par `python -m`, et sans cela il rend un FileNotFoundError par etape.
+#
+# Le depot d'origine epingle sa chaine dans requirements.txt : fontmake 3.10.0,
+# gftools 0.9.76, glyphsLib 6.9.5, fonttools 4.54.1. LES VERSIONS FONT PARTIE
+# DE LA CHAINE, et c'est mesure : le meme fontmake direct rend un binaire
+# different selon la version des bibliotheques, -20 octets au romain et +152 en
+# italique entre glyphsLib 6.14.0 / fonttools 4.65.0 et le jeu epingle.
+#
+# `CustomFilter_GF_Latin_All.plist` NE FILTRE RIEN. Il n'est reference par
+# aucun fichier de la chaine, seulement ecrit par scripts/update-custom-filter.py,
+# et il porte 1 255 noms. La reduction du repertoire vient du drapeau d'export
+# du .glyphs : 404 glyphes dans la source d'Atkinson, 392 exportes, 392 dans le
+# binaire. Temoin : 451 dans la source, 439 exportes, 439 dans le binaire.
+
+# Il n'y a PAS de bloc `stat:` ici, contre le config.yaml du depot d'origine,
+# et c'est mesure : `gftools-gen-stat` deduit du registre d'axes exactement la
+# meme table que le bloc explicite - huit valeurs, memes formats, memes
+# drapeaux, memes valeurs liees Regular/Bold et Roman/Italic - aux identifiants
+# de nom pres, et Font Bakery rend le meme releve sur les deux. Le bloc
+# n'apporte rien a Temoin, dont les instances portent les noms du registre.
+
+sources:
+  - Temoin.glyphs
+  - Temoin-Italic.glyphs
+familyName: "Temoin"
+outputDir: ../out-officiel
+
+# Les deux variables, sans les statiques ni les OTF. Le projet sert deux
+# variables sous-ensemblees, et c'est ce qui se compare a la chaine du projet.
+# Les statiques ne sont PAS mesurees a ce tour : elles relevent du point 3.
+buildVariable: true
+buildStatic: false
+buildOTF: false
+buildTTF: false
+cleanUp: true
+
+# ---------------------------------------------------------------------------
+# LES DEUX DRAPEAUX QUI PORTENT, ET CE QUE CHACUN EVITE
+# ---------------------------------------------------------------------------
+
+# 1. Sans ce drapeau, gftools builder FABRIQUE UNE SECONDE FAMILLE.
+#    `_do_smallcap` rend vrai des que la source porte `smcp`, ce qui est le cas
+#    depuis le lot 3, et le recipe provider ajoute quatre etapes : remapLayout
+#    `smcp -> ccmp`, puis rename `--just-family Temoin SC`. Mesure : quatre
+#    binaires au lieu de deux, `TemoinSC[wght].ttf` et `TemoinSC-Italic[wght].ttf`,
+#    ou les petites capitales passent en `ccmp`, donc actives par defaut.
+#    Personne ne l'a demande, et `buildSmallCap` vaut True par defaut.
+buildSmallCap: false
+
+# 2. Sans ce drapeau, 61 GLYPHES SORTENT RENOMMES en noms de production.
+#    C'est le piege du cinquante-troisieme tour rendu structurel : gftools
+#    builder appelle fontmake sans `--no-production-names`. Mesure sur le
+#    romain : `narrownbspace` devient `uni202F`, `thinspace` `uni2009`,
+#    `jdotless` `uni0237`, `jacute` `uni006A0301`, `idotless` `dotlessi`,
+#    `guillemetleft` `guillemotleft`, `mu` `uni03BC`, plus les seize
+#    combinants et les onze accentuees a commaaccent. Tout controle qui
+#    verifie par nom sur le binaire deviendrait aveugle sur ces 61 noms, a
+#    rendu identique.
+extraFontmakeArgs: "--no-production-names"
+
+# ---------------------------------------------------------------------------
+# CE QUE LA CHAINE AJOUTE, MESURE CONTRE fontmake DIRECT A VERSIONS EGALES
+# ---------------------------------------------------------------------------
+#   + table `gasp`  {65535: 15}
+#   + table `prep`  7 octets, le controle de smart dropout
+#   + STAT complete : deux axes wght et ital, 8 valeurs nommees, contre un
+#     seul axe et ZERO valeur nommee en fontmake direct
+#   + name ID 25, le prefixe PostScript des variations
+#   + 36 composites imbriques aplatis, `ij` passant de 2 a 4 composants
+#
+# ET RIEN D'AUTRE. Le dessin rendu est identique glyphe par glyphe sur les 439,
+# aux deux sources, a la position par defaut et aux deux bouts de l'axe, wght
+# 200 et 800. Les chasses sont identiques. Aucun contour n'est decompose.
+# Les metriques verticales, fsType, les plages Unicode et le panose etaient
+# deja conformes : ils viennent de la source d'Atkinson, que le projet a
+# heritee.
+#
+# Cout sur le sous-ensemble web servi, mesure en passant subset.py sur cette
+# sortie : +180 octets au romain et +192 en italique, pour 311 glyphes de part
+# et d'autre et les memes noms.
