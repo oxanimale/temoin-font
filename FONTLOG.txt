@@ -19,8 +19,9 @@ version.
 L'Observatoire de l'Expérimentation Animale a produit cette version pour son
 site et ses documents. Elle ajoute un zéro contextuel, un système de coupes de
 terminaison, 44 petites capitales, cinq tables d'espacement et de crénage,
-l'espace fine insécable U+202F, un bras au O capitale et un partage de la
-barre médiane du F et de l'E dans les graisses grasses.
+l'espace fine insécable U+202F, un bras au O capitale, un partage de la
+barre médiane du F et de l'E dans les graisses grasses, les étoiles pleine et
+vide U+2605 et U+2606, et le signe micro U+00B5.
 
 Le projet ne revendique ni l'accessibilité ni la lisibilité de Témoin. Les
 propriétés de la police de base ne se transmettent pas automatiquement à une
@@ -28,14 +29,34 @@ version modifiée, et l'OXA ne les a pas fait vérifier.
 
   Quatre fichiers variables, romain et italique, 1000 unités par em
   Deux TTF, axe de graisse wght 200 à 800, défaut 400, sept instances
-  nommées d'ExtraLight à ExtraBold, 439 glyphes
+  nommées d'ExtraLight à ExtraBold, 442 glyphes
   Deux WOFF2 pour le web, axe 400 à 800, défaut 400, cinq instances
-  nommées de Regular à ExtraBold, 311 glyphes, sous-ensemblés au latin
+  nommées de Regular à ExtraBold, 314 glyphes, sous-ensemblés au latin
   français
 
 
 Historique des versions
 -----------------------
+
+1.001  27 septembre 2026  Observatoire de l'Expérimentation Animale
+
+  Répertoire
+    Étoiles pleine et vide, U+2605 et U+2606, dessinées pour Témoin : même
+    chasse, droites en italique, trait de l'étoile vide à l'épaisseur du
+    Regular à toutes les graisses
+    Signe micro U+00B5, repris du mu grec U+03BC, dessin et crénage
+    Les trois caractères entrent dans les WOFF2 : 314 glyphes, 442 dans
+    les TTF
+
+  Fichiers
+    Date de modification des binaires gardée au 25 septembre 2026 par
+    SOURCE_DATE_EPOCH
+
+  Vérification
+    fontbakery 1.1.0, check-googlefonts, sur les deux TTF avec OFL.txt
+    à côté : identique à la version 1.000, module par module.
+    check_final.py, dix sections, 0 anomalie.
+
 
 1.000  25 septembre 2026  Observatoire de l'Expérimentation Animale
 

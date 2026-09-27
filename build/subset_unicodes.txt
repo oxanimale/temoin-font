@@ -1,6 +1,8 @@
 # Repertoire du sous-ensemble web de Temoin.
 # Herite du sous-ensemblage d etape 1, plus U+0178 (Y trema),
 # qui manquait et faisait decomposer le caractere par HarfBuzz.
+# Plus U+00B5 (micro), U+2605 et U+2606 (etoiles), soixante-douzieme
+# tour : l'indicateur de difficulte du site les emploie.
 U+0020
 U+0021
 U+0022
@@ -116,6 +118,7 @@ U+00B1
 U+00B2
 U+00B3
 U+00B4
+U+00B5
 U+00B6
 U+00B7
 U+00B8
@@ -236,3 +239,5 @@ U+2215
 U+2260
 U+2264
 U+2265
+U+2605
+U+2606

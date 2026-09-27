@@ -13,10 +13,12 @@ forme.
     lit jamais le resultat servi. check_crenage_sc lit bien la source du
     projet, mais il y mesure le crenage et la boite, pas le dessin.
 
-L'OBJET EST CE QUE LA CHAINE CREE, et non le lot 3 seul : 47 glyphes par
+L'OBJET EST CE QUE LA CHAINE CREE, et non le lot 3 seul : 50 glyphes par
 source, mesures et non recopies -- 44 petites capitales, `zero.slashless`,
-`zero.tf.slashless` et `narrownbspace`. Les deux dernieres n'ont aucun contour
-propre, et la section 7 dit ce que cela leur coute.
+`zero.tf.slashless`, `narrownbspace`, et depuis le soixante-douzieme tour
+`blackStar`, `whiteStar` et `micro`, que la section 8 rejoue. `zero.tf.slashless`
+et `narrownbspace` n'ont aucun contour propre, et la section 7 dit ce que cela
+leur coute.
 
 LES DEUX LECTURES, et chaque section dit laquelle elle pose.
 
@@ -67,9 +69,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import glyphsLib
+from glyphsLib.classes import GSPath
 
 import bras_O as BO
 import dessin as D
+import etoiles as ET
 import lot3
 import make_temoin as MT
 
@@ -80,13 +84,16 @@ SOURCES = [("roman", os.path.join(ICI, "Temoin.glyphs"),
            ("italic", os.path.join(ICI, "Temoin-Italic.glyphs"),
             "/tmp/ahn/sources/AtkinsonHyperlegibleNext-Italic.glyphs")]
 
-#: LES TROIS CREATIONS QUI NE SONT PAS DES PETITES CAPITALES. Elles sont
+#: LES SIX CREATIONS QUI NE SONT PAS DES PETITES CAPITALES. Elles sont
 #: nommees ici parce que `make_temoin` ne les porte dans aucune table -- elles
-#: naissent dans le corps de `add_slashless` et de `add_narrow_nbspace`. Une
-#: liste ecrite a la main se perime sans que rien ne le dise, et ce projet l'a
-#: paye sur `VOISINS_F` : c'est exactement ce que la section 1 surveille, en
-#: comparant cette liste au repertoire reellement cree.
-AUTRES_CREES = ("zero.slashless", "zero.tf.slashless", "narrownbspace")
+#: naissent dans le corps de `add_slashless`, `add_narrow_nbspace`,
+#: `add_micro` et `etoiles.appliquer`. Une liste ecrite a la main se perime
+#: sans que rien ne le dise, et ce projet l'a paye sur `VOISINS_F` : c'est
+#: exactement ce que la section 1 surveille, en comparant cette liste au
+#: repertoire reellement cree. Elle a mordu au soixante-douzieme tour sur les
+#: trois noms neufs, avant que la section 8 ne les prenne.
+AUTRES_CREES = ("zero.slashless", "zero.tf.slashless", "narrownbspace",
+                ET.PLEINE, ET.VIDE, "micro")
 
 #: Le rapport de derivation du lot 3. LU chez `make_temoin` et jamais recopie :
 #: deux definitions du meme nombre finissent par vivre dans deux fichiers, et
@@ -442,6 +449,100 @@ def section6(servi):
              f"ecart {pire:.2f} u ; zero.tf.slashless compose bien"] + lignes), n
 
 
+def _noeuds_chemins(chemins):
+    return [(round(n.position.x, 1), round(n.position.y, 1), n.type)
+            for p in chemins for n in p.nodes]
+
+
+def section8(servi):
+    """[REJEU] Les etoiles sont ce que `etoiles.calques` rend depuis la source
+    SERVIE, et le micro est la copie exacte du `mu` servi.
+
+    Le rejeu des etoiles relit le losange servi, comme le producteur : une
+    derive du trait, de la variante ou de la geometrie se voit ici noeud par
+    noeud. Le micro se compare au `mu` du meme master, contours, chasse et
+    groupes : un composite, qui ferait entrer `mu` dans le perimetre du
+    titrage, est un ecart (voir `make_temoin.add_micro`).
+    """
+    lignes, n = [], 0
+    mids = {m.id: m.name for m in servi.masters}
+    attendus = {ET.PLEINE: ET.UNICODES[ET.PLEINE], ET.VIDE: ET.UNICODES[ET.VIDE],
+                "micro": "00B5"}
+    for nom, u in attendus.items():
+        g = servi.glyphs[nom]
+        if g is None:
+            return [f"8. etoiles et micro     [REJEU] NON MESURE : {nom} "
+                    "absent"], -1
+        if list(g.unicodes or []) != [u]:
+            n += 1
+            lignes.append(f"  !! 8 {nom} : unicodes {g.unicodes}, attendu {u}")
+    try:
+        rejeu = ET.calques(servi, ET.VARIANTE, ET.TRAIT)
+    except (KeyError, ValueError) as e:
+        return [f"8. etoiles et micro     [REJEU] NON MESURE : le producteur "
+                f"refuse la source servie ({e})"], -1
+    vus, pire = 0, 0.0
+    for nom in (ET.PLEINE, ET.VIDE):
+        for lay in servi.glyphs[nom].layers:
+            if lay.layerId not in mids:
+                continue
+            m = mids[lay.layerId]
+            largeur, plein, evide, _t = rejeu[m]
+            ctrs = plein if nom == ET.PLEINE else evide
+            attendu = _noeuds_chemins(
+                [ET._chemin(c, sens=1 if i == 0 else -1)
+                 for i, c in enumerate(ctrs)])
+            reel = _noeuds_chemins([s for s in lay.shapes
+                                    if isinstance(s, GSPath)])
+            vus += 1
+            if lay.width != largeur:
+                n += 1
+                lignes.append(f"  !! 8 {nom} {m} : chasse {lay.width}, "
+                              f"rejeu {largeur}")
+            if len(reel) != len(attendu) or any(
+                    a[2] != b[2] for a, b in zip(reel, attendu)):
+                n += 1
+                lignes.append(f"  !! 8 {nom} {m} : {len(reel)} noeuds servis "
+                              f"pour {len(attendu)} rejoues, ou types differents")
+                continue
+            e = max((max(abs(a[0] - b[0]), abs(a[1] - b[1]))
+                     for a, b in zip(reel, attendu)), default=0.0)
+            pire = max(pire, e)
+            if e > TOL_REJEU:
+                n += 1
+                lignes.append(f"  !! 8 {nom} {m} : s'ecarte du rejeu de "
+                              f"{e:.2f} u")
+    mu, mi = servi.glyphs["mu"], servi.glyphs["micro"]
+    if mu is None:
+        return [f"8. etoiles et micro     [REJEU] NON MESURE : mu absent"], -1
+    if (mi.leftKerningGroup, mi.rightKerningGroup) != (
+            mu.leftKerningGroup, mu.rightKerningGroup):
+        n += 1
+        lignes.append(f"  !! 8 micro : groupes {mi.leftKerningGroup} / "
+                      f"{mi.rightKerningGroup}, mu {mu.leftKerningGroup} / "
+                      f"{mu.rightKerningGroup}")
+    ref = {l.layerId: l for l in mu.layers if l.layerId in mids}
+    for lay in mi.layers:
+        if lay.layerId not in mids:
+            continue
+        m = mids[lay.layerId]
+        vus += 1
+        if any(not isinstance(s, GSPath) for s in lay.shapes):
+            n += 1
+            lignes.append(f"  !! 8 micro {m} : porte un composant, `mu` "
+                          "entrerait dans le perimetre du titrage")
+            continue
+        r = ref.get(lay.layerId)
+        if r is None or lay.width != r.width or _noeuds_chemins(
+                lay.shapes) != _noeuds_chemins(
+                [s for s in r.shapes if isinstance(s, GSPath)]):
+            n += 1
+            lignes.append(f"  !! 8 micro {m} : differe de mu")
+    return ([f"8. etoiles et micro     [REJEU] {vus} calques, plus grand "
+             f"ecart {pire:.2f} u ; micro copie de mu, variante "
+             f"{ET.VARIANTE}, trait {ET.TRAIT}"] + lignes), n
+
+
 def section7(servi):
     """[DECLARATION] Ce que ce controle ne couvre PAS, et pourquoi.
 
@@ -526,6 +627,8 @@ def temoin():
         ("4 structure", "d.sc",           "contour",     "section4"),
         ("5 rejeu",     "e.sc",           "noeud",       "section5"),
         ("6 zero",      "zero.slashless", "noeud",       "section6"),
+        ("8 etoile",    ET.VIDE,          "noeud",       "section8"),
+        ("8 micro",     "micro",          "noeud",       "section8"),
     )
     faux = 0
     for etq, nom, quoi, cible in essais:
@@ -542,6 +645,7 @@ def temoin():
             "section4": lambda: section4(servi, spm, n_bras),
             "section5": lambda: section5(servi, nu, n_bras),
             "section6": lambda: section6(servi),
+            "section8": lambda: section8(servi),
         }
         ligne = []
         for clef, fn in res.items():
@@ -601,6 +705,7 @@ def main():
         blocs.append(section5(servi, nu, n_bras))
         blocs.append(section6(servi))
         blocs.append(section7(servi))
+        blocs.append(section8(servi))
         n = 0
         for lignes, k in blocs:
             for ligne in lignes:

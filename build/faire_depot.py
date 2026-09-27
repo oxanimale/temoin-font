@@ -17,8 +17,9 @@ au soixante-sixieme tour et figee ici.
                     lisent le banc d essai
     les producteurs des six tables generees
 
-62 modules, plus ce script, sur 193 fichiers .py au soixante-et-onzieme
-tour (63 sur 190 au soixante-sixieme). Les 130 ecartes sont des
+63 modules, plus ce script, sur 195 fichiers .py au soixante-douzieme
+tour, `etoiles` entre (62 sur 193 au soixante-et-onzieme, 63 sur 190 au
+soixante-sixieme). Les 131 ecartes sont des
 balayages, des generateurs de planches et des essais, qu aucun module
 retenu n importe. Le script
 le REVERIFIE a chaque passage, section 2 : un module retenu qui
@@ -57,14 +58,14 @@ DEPOT = os.path.join(PROJET, "depot-temoin-font")
 # Ce que le depot porte
 # ------------------------------------------------------------------
 
-# Les 62 modules de build/, fermeture transitive des imports.
+# Les 63 modules de build/, fermeture transitive des imports.
 MODULES = """
 abaisse_U approches balayage_lot4 balayage_lot4b barre_F barre_mediane
 bras_O check3 check4 check5 check_O check_U check_approches
 check_barre_F check_circonflexe check_contacts check_crees check_crenage_sc
 check_descente_j check_final check_operateurs check_paires_contacts
 check_perimetre check_souscrits check_termes coupe
-crenage_sc descente_j dessin finaliser inventaire_F inventaire_ae
+crenage_sc descente_j dessin etoiles finaliser inventaire_F inventaire_ae
 inventaire_bouts inventaire_contacts inventaire_pieds inventaire_xa
 lot2 lot3 lot4 make_temoin mesure_O mesure_bouts mesure_haut_titrage
 mesure_point18 mesure_point66 mesure_sortante_lot mesure_titrage

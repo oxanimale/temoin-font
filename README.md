@@ -4,7 +4,7 @@ Police de caractères de l'Observatoire de l'Expérimentation Animale, pour le
 site oxanimale.fr et ses documents.
 
 Témoin est une version modifiée d'**Atkinson Hyperlegible Next**, publiée sous
-SIL Open Font License 1.1. Version 1.000, 25 septembre 2026.
+SIL Open Font License 1.1. Version 1.001, 27 septembre 2026.
 
 Quatre fichiers variables, romain et italique :
 
@@ -45,6 +45,13 @@ fichier.
 - **Bras du O capitale**, sur la seule source romaine.
 - **Barre médiane du F et de l'E**, dont le décrochage dans les gras vient
   d'Atkinson et se partage ici entre les deux lettres.
+- **Étoiles pleine et vide**, ★ U+2605 et ☆ U+2606, absentes d'Atkinson et
+  dessinées pour Témoin. Les deux ont la même chasse, pour qu'une note
+  ★★★☆☆ s'aligne, et restent droites en italique. Le trait de l'étoile vide
+  garde l'épaisseur du Regular à toutes les graisses : au trait gras, son creux
+  se bouchait en texte et ☆ se lisait ★.
+- **Signe micro** U+00B5, absent d'Atkinson, qui porte le mu grec U+03BC. Il en
+  reprend le dessin et le crénage.
 
 ## Ce que le projet ne revendique pas
 
@@ -76,10 +83,10 @@ une version modifiée, et l'OXA ne les a pas fait vérifier.
 Le dossier `fonts/` porte deux formats.
 
 ```
-Temoin.woff2               web, graisse 400 à 800, 311 glyphes, 39 Ko
-Temoin-Italic.woff2        web, graisse 400 à 800, 311 glyphes, 42 Ko
-Temoin[wght].ttf           installation, graisse 200 à 800, 439 glyphes
-Temoin-Italic[wght].ttf    installation, graisse 200 à 800, 439 glyphes
+Temoin.woff2               web, graisse 400 à 800, 314 glyphes, 39 Ko
+Temoin-Italic.woff2        web, graisse 400 à 800, 314 glyphes, 42 Ko
+Temoin[wght].ttf           installation, graisse 200 à 800, 442 glyphes
+Temoin-Italic[wght].ttf    installation, graisse 200 à 800, 442 glyphes
 ```
 
 Les gabarits de pages de l'OXA emploient les graisses 400 à 700, et retirer
@@ -121,10 +128,10 @@ fonts/               les deux WOFF2, les deux TTF et une copie de la licence
 build/               les sources .glyphs et la chaîne complète
 ```
 
-`build/` porte 62 modules Python, plus `faire_depot.py`, le script qui assemble
+`build/` porte 63 modules Python, plus `faire_depot.py`, le script qui assemble
 ce dépôt : la chaîne de compilation, les contrôles, et les producteurs des
-tables d'espacement. Le dossier de travail du projet compte 193 fichiers
-Python. Les 130 écartés sont des balayages, des générateurs de planches et des
+tables d'espacement. Le dossier de travail du projet compte 195 fichiers
+Python. Les 131 écartés sont des balayages, des générateurs de planches et des
 essais, qu'aucun module publié n'importe. `faire_depot.py` porte la liste
 retenue, dit pourquoi chaque écarté l'est, et vérifie à chaque passage
 qu'aucun module publié n'appelle un module absent.
@@ -170,8 +177,9 @@ python3 subset.py
 ```
 
 `SOURCE_DATE_EPOCH` fixe la date de modification inscrite dans les binaires au
-25 septembre 2026, 0 h UTC. Sans elle, chaque compilation inscrit l'heure
-courante, et deux compilations identiques diffèrent de quelques octets.
+25 septembre 2026, 0 h UTC, date de la version 1.000, gardée pour la 1.001.
+Sans elle, chaque compilation inscrit l'heure courante, et deux compilations
+identiques diffèrent de quelques octets.
 
 `finaliser.py` écrit `Temoin[wght].ttf` et `Temoin-Italic[wght].ttf` dans
 `$TEMOIN_BUILD`. `subset.py` en tire les deux WOFF2, réduit leur axe à 400-800,
@@ -200,7 +208,7 @@ cd build
 python3 check_final.py            # dix sections
 python3 check_final.py --temoin   # treize mesures, aucune muette
 python3 check_approches.py        # espacement et crénage
-python3 check_crees.py            # les 47 glyphes créés
+python3 check_crees.py            # les 50 glyphes créés
 ```
 
 Avec `TEMOIN_BUILD` exporté comme ci-dessus. `check_final.py` lit les deux

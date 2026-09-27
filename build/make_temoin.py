@@ -64,6 +64,9 @@ import barre_mediane as BM
 # precedents : le geste vit dans son module pour que les deux generateurs qui
 # RECONSTRUISENT leur etat puissent le rejouer.
 import descente_j as DJ
+# Les etoiles, soixante-douzieme tour : un dessin neuf, dans son module comme
+# les gestes precedents, pour que `check_crees` puisse le rejouer.
+import etoiles as ET
 from glyphsLib.classes import GSComponent
 
 THETA = 20.0        # angle de coupe, lot 2
@@ -202,6 +205,62 @@ def add_narrow_nbspace(font, log):
     font.glyphs.append(g)
     log.append(("U+202F fine insecable",
                 ", ".join(f"{m} {w:g}" for m, w in largeurs.items())))
+
+
+def add_micro(font, log):
+    """Le signe micro U+00B5, soixante-douzieme tour.
+
+    Il manque a la police de base, qui porte le mu grec U+03BC : `mu`, un
+    seul contour par master, groupes de crenage `p` a gauche et `u` a droite,
+    et aucune paire ne le vise par son nom. Le micro prend son dessin et ses
+    groupes, donc il crene comme lui.
+
+    UNE COPIE DES CONTOURS, ET NON UN COMPOSITE, et la raison est dans la
+    chaine. `mesure_titrage.repertoire_servi` lit les NOMS de glyphes du WOFF2
+    servi, et le perimetre du titrage est la geometrie amont intersectee a ce
+    repertoire. Un composite ferait entrer `mu` dans le servi comme glyphe de
+    composant, donc dans le perimetre a la passe suivante : le micro recevrait
+    la coupe de titrage sans que personne l'ait jugee, et le point fixe
+    glisserait d'une passe. Le nom `micro` n'existe pas dans l'amont, il
+    n'entre dans aucun perimetre.
+
+    Appele EN DERNIER dans `process`, apres tout geste de dessin : il copie le
+    `mu` que la chaine sert, et aucune etape posterieure ne le touche. La
+    section 8 de `check_crees` rejoue la copie sur la source servie.
+    """
+    src = font.glyphs["mu"]
+    if src is None:
+        raise KeyError("mu absent de la source : le signe micro n'a pas de "
+                       "dessin de reference")
+    if font.glyphs["micro"] is not None:
+        raise ValueError("micro existe deja dans la source : la police de base "
+                         "a change, et cette etape ne l'ecrase pas")
+    g = GSGlyph("micro")
+    g.unicodes = ["00B5"]
+    g.export = True
+    g.leftKerningGroup = src.leftKerningGroup
+    g.rightKerningGroup = src.rightKerningGroup
+    ids = {m.id: m.name for m in font.masters}
+    n = 0
+    for layer in src.layers:
+        if layer.layerId not in ids:
+            continue
+        if any(not isinstance(s, GSPath) for s in layer.shapes):
+            raise ValueError(f"mu {ids[layer.layerId]} porte un composant : la "
+                             "copie par les contours le perdrait")
+        neuf = GSLayer()
+        neuf.layerId = neuf.associatedMasterId = layer.layerId
+        neuf.width = layer.width
+        for s in layer.shapes:
+            neuf.shapes.append(s.clone())
+        g.layers.append(neuf)
+        n += 1
+    if n != len(ids):
+        raise ValueError(f"micro construit dans {n} master(s) sur {len(ids)} : "
+                         "un master sans calque casse le variable")
+    font.glyphs.append(g)
+    log.append(("U+00B5 micro", f"copie de mu, {n} masters, groupes "
+                f"{g.leftKerningGroup} / {g.rightKerningGroup}"))
 
 
 # ----------------------------------------------------------------- features
@@ -586,8 +645,10 @@ IDENTITE = {
 }
 
 # Temoin repart de 1.000 : reprendre le 2.001 d'Atkinson ferait passer un fork
-# pour une revision de la police d'origine.
-VERSION = (1, 0)
+# pour une revision de la police d'origine. 1.001 au soixante-douzieme tour,
+# decision de Nicolas : les etoiles et le signe micro changent le repertoire,
+# et deux fichiers differents sous le meme numero ne se distingueraient plus.
+VERSION = (1, 1)
 
 AMONT_ATTENDU = {
     "copyrights": COPYRIGHT_AMONT,
@@ -827,6 +888,13 @@ def process(path, out_path):
     # quarante-septieme tour, et une etape muette ne se distinguerait pas d'une
     # etape oubliee.
     BR.appliquer(font, log)
+    # LES ETOILES ET LE SIGNE MICRO, soixante-douzieme tour. EN DERNIER, apres
+    # tout geste de dessin, et c'est la seule place sure : aucune table indexee
+    # par nom (lot 2, fusion, lot 3) ne peut les atteindre, et aucun des trois
+    # noms n'existe dans l'amont, donc aucun perimetre de titrage non plus. Le
+    # micro copie le `mu` servi, voir `add_micro`.
+    ET.appliquer(font, log)
+    add_micro(font, log)
     for x in jrn:
         if "plafond" in x:
             log.append((f"plafond {x['base']} {x['master']}",
