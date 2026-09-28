@@ -13,10 +13,12 @@ forme.
     lit jamais le resultat servi. check_crenage_sc lit bien la source du
     projet, mais il y mesure le crenage et la boite, pas le dessin.
 
-L'OBJET EST CE QUE LA CHAINE CREE, et non le lot 3 seul : 50 glyphes par
+L'OBJET EST CE QUE LA CHAINE CREE, et non le lot 3 seul : 55 glyphes par
 source, mesures et non recopies -- 44 petites capitales, `zero.slashless`,
-`zero.tf.slashless`, `narrownbspace`, et depuis le soixante-douzieme tour
-`blackStar`, `whiteStar` et `micro`, que la section 8 rejoue. `zero.tf.slashless`
+`zero.tf.slashless`, `narrownbspace`, depuis le soixante-douzieme tour
+`blackStar`, `whiteStar` et `micro`, que la section 8 rejoue, et depuis le
+soixante-treizieme `alpha`, `beta`, `rightArrow`, `emod` et `rmod`, que la
+section 9 rejoue avec les trois renvois de codes. `zero.tf.slashless`
 et `narrownbspace` n'ont aucun contour propre, et la section 7 dit ce que cela
 leur coute.
 
@@ -72,6 +74,7 @@ import glyphsLib
 from glyphsLib.classes import GSPath
 
 import bras_O as BO
+import complements as CP
 import dessin as D
 import etoiles as ET
 import lot3
@@ -87,13 +90,13 @@ SOURCES = [("roman", os.path.join(ICI, "Temoin.glyphs"),
 #: LES SIX CREATIONS QUI NE SONT PAS DES PETITES CAPITALES. Elles sont
 #: nommees ici parce que `make_temoin` ne les porte dans aucune table -- elles
 #: naissent dans le corps de `add_slashless`, `add_narrow_nbspace`,
-#: `add_micro` et `etoiles.appliquer`. Une liste ecrite a la main se perime
+#: `add_micro`, `etoiles.appliquer` et `complements.appliquer`. Une liste ecrite a la main se perime
 #: sans que rien ne le dise, et ce projet l'a paye sur `VOISINS_F` : c'est
 #: exactement ce que la section 1 surveille, en comparant cette liste au
 #: repertoire reellement cree. Elle a mordu au soixante-douzieme tour sur les
 #: trois noms neufs, avant que la section 8 ne les prenne.
 AUTRES_CREES = ("zero.slashless", "zero.tf.slashless", "narrownbspace",
-                ET.PLEINE, ET.VIDE, "micro")
+                ET.PLEINE, ET.VIDE, "micro") + CP.NEUFS
 
 #: Le rapport de derivation du lot 3. LU chez `make_temoin` et jamais recopie :
 #: deux definitions du meme nombre finissent par vivre dans deux fichiers, et
@@ -543,6 +546,82 @@ def section8(servi):
              f"{ET.VARIANTE}, trait {ET.TRAIT}"] + lignes), n
 
 
+def section9(servi):
+    """[REJEU] Les cinq glyphes du repertoire du site, soixante-treizieme
+    tour, sont ce que `complements.calques` rend depuis la source SERVIE, aux
+    variantes arretees ; leurs codes et leurs groupes sont ceux du module, et
+    les trois renvois de codes sont poses.
+
+    Le rejeu relit les pieces servies (d, q, o, germandbls, p, minus, greater,
+    e, r, ordmasculine), comme le producteur : une piece qui derive, ou une
+    variante qui change sans que le glyphe suive, se voit noeud par noeud.
+    """
+    lignes, n = [], 0
+    mids = {m.id: m.name for m in servi.masters}
+    for nom in CP.NEUFS:
+        g = servi.glyphs[nom]
+        if g is None:
+            return [f"9. repertoire du site  [REJEU] NON MESURE : {nom} "
+                    "absent"], -1
+        if list(g.unicodes or []) != [CP.UNICODES[nom]]:
+            n += 1
+            lignes.append(f"  !! 9 {nom} : unicodes {g.unicodes}, attendu "
+                          f"{CP.UNICODES[nom]}")
+        if (g.leftKerningGroup, g.rightKerningGroup) != CP.GROUPES[nom]:
+            n += 1
+            lignes.append(f"  !! 9 {nom} : groupes {g.leftKerningGroup} / "
+                          f"{g.rightKerningGroup}, attendu {CP.GROUPES[nom]}")
+    for nom, codes in CP.RENVOIS.items():
+        g = servi.glyphs[nom]
+        portes = {u.upper() for u in ((g.unicodes if g else None) or [])}
+        if not set(codes) <= portes:
+            n += 1
+            lignes.append(f"  !! 9 renvoi {nom} : porte {sorted(portes)}, "
+                          f"attendu aussi {list(codes)}")
+    try:
+        rejeu, _j = CP.calques(servi, CP.VARIANTE_FLECHE, CP.VARIANTE_ALPHA)
+    except (KeyError, ValueError) as e:
+        return [f"9. repertoire du site  [REJEU] NON MESURE : le producteur "
+                f"refuse la source servie ({e})"], -1
+    vus, pire = 0, 0.0
+    for nom in CP.NEUFS:
+        for lay in servi.glyphs[nom].layers:
+            if lay.layerId not in mids:
+                continue
+            m = mids[lay.layerId]
+            ref = rejeu[nom][lay.layerId]
+            vus += 1
+            if any(not isinstance(s_, GSPath) for s_ in lay.shapes):
+                n += 1
+                lignes.append(f"  !! 9 {nom} {m} : porte un composant")
+                continue
+            if lay.width != ref.width:
+                n += 1
+                lignes.append(f"  !! 9 {nom} {m} : chasse {lay.width}, rejeu "
+                              f"{ref.width}")
+            reel = _noeuds_chemins(lay.shapes)
+            attendu = _noeuds_chemins([s_ for s_ in ref.shapes
+                                       if isinstance(s_, GSPath)])
+            if len(reel) != len(attendu) or any(
+                    a[2] != b[2] for a, b in zip(reel, attendu)):
+                n += 1
+                lignes.append(f"  !! 9 {nom} {m} : {len(reel)} noeuds servis "
+                              f"pour {len(attendu)} rejoues, ou types differents")
+                continue
+            e = max((max(abs(a[0] - b[0]), abs(a[1] - b[1]))
+                     for a, b in zip(reel, attendu)), default=0.0)
+            pire = max(pire, e)
+            if e > TOL_REJEU:
+                n += 1
+                lignes.append(f"  !! 9 {nom} {m} : s'ecarte du rejeu de "
+                              f"{e:.2f} u")
+    return ([f"9. repertoire du site  [REJEU] {vus} calques, plus grand ecart "
+             f"{pire:.2f} u ; fleche {CP.VARIANTE_FLECHE}, alpha "
+             f"{CP.VARIANTE_ALPHA} ; renvois "
+             + ", ".join(f"{k} +{len(v)}" for k, v in CP.RENVOIS.items())]
+            + lignes), n
+
+
 def section7(servi):
     """[DECLARATION] Ce que ce controle ne couvre PAS, et pourquoi.
 
@@ -629,6 +708,9 @@ def temoin():
         ("6 zero",      "zero.slashless", "noeud",       "section6"),
         ("8 etoile",    ET.VIDE,          "noeud",       "section8"),
         ("8 micro",     "micro",          "noeud",       "section8"),
+        ("9 alpha",     CP.ALPHA,         "noeud",       "section9"),
+        ("9 fleche",    CP.FLECHE,        "noeud",       "section9"),
+        ("9 exposant",  CP.EXP_R,         "noeud",       "section9"),
     )
     faux = 0
     for etq, nom, quoi, cible in essais:
@@ -646,6 +728,7 @@ def temoin():
             "section5": lambda: section5(servi, nu, n_bras),
             "section6": lambda: section6(servi),
             "section8": lambda: section8(servi),
+            "section9": lambda: section9(servi),
         }
         ligne = []
         for clef, fn in res.items():
@@ -706,6 +789,7 @@ def main():
         blocs.append(section6(servi))
         blocs.append(section7(servi))
         blocs.append(section8(servi))
+        blocs.append(section9(servi))
         n = 0
         for lignes, k in blocs:
             for ligne in lignes:

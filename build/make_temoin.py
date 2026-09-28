@@ -67,6 +67,7 @@ import descente_j as DJ
 # Les etoiles, soixante-douzieme tour : un dessin neuf, dans son module comme
 # les gestes precedents, pour que `check_crees` puisse le rejouer.
 import etoiles as ET
+import complements as CP
 from glyphsLib.classes import GSComponent
 
 THETA = 20.0        # angle de coupe, lot 2
@@ -648,7 +649,7 @@ IDENTITE = {
 # pour une revision de la police d'origine. 1.001 au soixante-douzieme tour,
 # decision de Nicolas : les etoiles et le signe micro changent le repertoire,
 # et deux fichiers differents sous le meme numero ne se distingueraient plus.
-VERSION = (1, 1)
+VERSION = (1, 2)
 
 AMONT_ATTENDU = {
     "copyrights": COPYRIGHT_AMONT,
@@ -895,6 +896,12 @@ def process(path, out_path):
     # micro copie le `mu` servi, voir `add_micro`.
     ET.appliquer(font, log)
     add_micro(font, log)
+    # LE REPERTOIRE DU SITE, soixante-treizieme tour : trois renvois de codes
+    # et cinq glyphes construits (alpha, beta, fleche, e et r en exposant).
+    # EN DERNIER, pour la meme raison que les etoiles : les pieces portent
+    # alors tous les gestes du projet, et aucun des cinq noms n'est dans
+    # l'amont. Voir `complements`.
+    CP.appliquer(font, log)
     for x in jrn:
         if "plafond" in x:
             log.append((f"plafond {x['base']} {x['master']}",

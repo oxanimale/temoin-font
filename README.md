@@ -4,12 +4,12 @@ Police de caractères de l'Observatoire de l'Expérimentation Animale, pour le
 site oxanimale.fr et ses documents.
 
 Témoin est une version modifiée d'**Atkinson Hyperlegible Next**, publiée sous
-SIL Open Font License 1.1. Version 1.001, 27 septembre 2026.
+SIL Open Font License 1.1. Version 1.002, 27 septembre 2026.
 
 Quatre fichiers variables, romain et italique :
 
 - deux WOFF2 pour le web, axe de graisse 400 à 800, sous-ensemblés au latin
-  français
+  français, plus les lettres grecques et les signes qu'emploie le site
 - deux TTF pour l'installation, axe de graisse 200 à 800, répertoire complet
 
 ## La police de base, et ce que l'OXA lui doit
@@ -52,6 +52,19 @@ fichier.
   se bouchait en texte et ☆ se lisait ★.
 - **Signe micro** U+00B5, absent d'Atkinson, qui porte le mu grec U+03BC. Il en
   reprend le dessin et le crénage.
+- **α et β**, absents d'Atkinson, construits à partir de glyphes de Témoin :
+  α est la panse du o traversée à droite d'un trait courbe, β le ß prolongé
+  jusqu'au bas du p. Les capitales Α et Β sont le A et le B.
+- **Flèche →**, faite de la hampe du signe moins et d'une tête au même trait,
+  à la hauteur des opérateurs.
+- **Exposants ᵉ et ʳ**, pour XIXᵉ et 1ᵉʳ. Atkinson dessine son º comme un o
+  pris plus gras, réduit et monté : la règle se mesure sur le couple o / º et
+  s'applique au e et au r.
+- **Opérateurs mathématiques** remontés de 64 unités par rapport à Atkinson :
+  + − × ÷ = < > ~ ≈ ≠ ≤ ≥.
+- **Codes ajoutés sans dessin** : le trait d'union U+2010 et le trait d'union
+  insécable U+2011 ont le dessin du trait d'union, l'incrément U+2206 celui
+  du Δ.
 
 ## Ce que le projet ne revendique pas
 
@@ -69,8 +82,9 @@ une version modifiée, et l'OXA ne les a pas fait vérifier.
   s'aplatit le long de l'axe : `tildecomb` et `brevecomb` dans les deux sources,
   `commaaccentcomb` en italique, plus le `l` romain. Mesuré entre 0,004 et
   0,113 % de l'aire d'encre du glyphe, invisible à 18 px comme à 420 px. À titre
-  de comparaison, le bras du O, qui est voulu, se recoupe de 2,6 %. Surveillé
-  par `build/check_final.py`, section 8.
+  de comparaison, le bras du O, qui est voulu, se recoupe de 2,6 %, et α, fait
+  de deux contours superposés, de 19 %. Surveillé par `build/check_final.py`,
+  section 8.
 - Des paires héritées d'Atkinson passent sous le plancher de jour du projet,
   sur des accents bas de casse devant un chiffre ou une capitale à diagonale.
   Le projet ne les resserre pas et ne les corrige pas.
@@ -83,10 +97,10 @@ une version modifiée, et l'OXA ne les a pas fait vérifier.
 Le dossier `fonts/` porte deux formats.
 
 ```
-Temoin.woff2               web, graisse 400 à 800, 314 glyphes, 39 Ko
-Temoin-Italic.woff2        web, graisse 400 à 800, 314 glyphes, 42 Ko
-Temoin[wght].ttf           installation, graisse 200 à 800, 442 glyphes
-Temoin-Italic[wght].ttf    installation, graisse 200 à 800, 442 glyphes
+Temoin.woff2               web, graisse 400 à 800, 322 glyphes, 40 Ko
+Temoin-Italic.woff2        web, graisse 400 à 800, 322 glyphes, 43 Ko
+Temoin[wght].ttf           installation, graisse 200 à 800, 447 glyphes
+Temoin-Italic[wght].ttf    installation, graisse 200 à 800, 447 glyphes
 ```
 
 Les gabarits de pages de l'OXA emploient les graisses 400 à 700, et retirer
@@ -128,10 +142,10 @@ fonts/               les deux WOFF2, les deux TTF et une copie de la licence
 build/               les sources .glyphs et la chaîne complète
 ```
 
-`build/` porte 63 modules Python, plus `faire_depot.py`, le script qui assemble
+`build/` porte 64 modules Python, plus `faire_depot.py`, le script qui assemble
 ce dépôt : la chaîne de compilation, les contrôles, et les producteurs des
-tables d'espacement. Le dossier de travail du projet compte 195 fichiers
-Python. Les 131 écartés sont des balayages, des générateurs de planches et des
+tables d'espacement. Le dossier de travail du projet compte 198 fichiers
+Python. Les 133 écartés sont des balayages, des générateurs de planches et des
 essais, qu'aucun module publié n'importe. `faire_depot.py` porte la liste
 retenue, dit pourquoi chaque écarté l'est, et vérifie à chaque passage
 qu'aucun module publié n'appelle un module absent.
@@ -177,7 +191,7 @@ python3 subset.py
 ```
 
 `SOURCE_DATE_EPOCH` fixe la date de modification inscrite dans les binaires au
-25 septembre 2026, 0 h UTC, date de la version 1.000, gardée pour la 1.001.
+25 septembre 2026, 0 h UTC, date de la version 1.000, gardée depuis.
 Sans elle, chaque compilation inscrit l'heure courante, et deux compilations
 identiques diffèrent de quelques octets.
 
@@ -208,7 +222,7 @@ cd build
 python3 check_final.py            # dix sections
 python3 check_final.py --temoin   # treize mesures, aucune muette
 python3 check_approches.py        # espacement et crénage
-python3 check_crees.py            # les 50 glyphes créés
+python3 check_crees.py            # les 55 glyphes créés
 ```
 
 Avec `TEMOIN_BUILD` exporté comme ci-dessus. `check_final.py` lit les deux

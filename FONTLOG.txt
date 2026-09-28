@@ -21,7 +21,8 @@ site et ses documents. Elle ajoute un zéro contextuel, un système de coupes de
 terminaison, 44 petites capitales, cinq tables d'espacement et de crénage,
 l'espace fine insécable U+202F, un bras au O capitale, un partage de la
 barre médiane du F et de l'E dans les graisses grasses, les étoiles pleine et
-vide U+2605 et U+2606, et le signe micro U+00B5.
+vide U+2605 et U+2606, le signe micro U+00B5, les lettres grecques α et β, la
+flèche U+2192 et les exposants ᵉ et ʳ.
 
 Le projet ne revendique ni l'accessibilité ni la lisibilité de Témoin. Les
 propriétés de la police de base ne se transmettent pas automatiquement à une
@@ -29,14 +30,40 @@ version modifiée, et l'OXA ne les a pas fait vérifier.
 
   Quatre fichiers variables, romain et italique, 1000 unités par em
   Deux TTF, axe de graisse wght 200 à 800, défaut 400, sept instances
-  nommées d'ExtraLight à ExtraBold, 442 glyphes
+  nommées d'ExtraLight à ExtraBold, 447 glyphes
   Deux WOFF2 pour le web, axe 400 à 800, défaut 400, cinq instances
-  nommées de Regular à ExtraBold, 314 glyphes, sous-ensemblés au latin
-  français
+  nommées de Regular à ExtraBold, 322 glyphes, sous-ensemblés au latin
+  français, plus les lettres grecques et les signes qu'emploie le site
 
 
 Historique des versions
 -----------------------
+
+1.002  27 septembre 2026  Observatoire de l'Expérimentation Animale
+
+  Répertoire
+    α U+03B1 et β U+03B2, construits à partir de glyphes de Témoin : la
+    panse du o traversée d'un trait courbe, le ß prolongé au bas du p
+    Α U+0391 et Β U+0392 sur le A et le B
+    Flèche U+2192 : hampe du signe moins, tête au même trait, bras à
+    30 degrés
+    Exposants ᵉ U+1D49 et ʳ U+02B3, par la règle des ordinaux d'Atkinson
+    U+2010 et U+2011 sur le trait d'union, U+2206 sur Δ
+    μ U+03BC, Δ U+0394 et ≈ U+2248 entrent dans les WOFF2, avec le dessin
+    d'Atkinson : 322 glyphes, 447 dans les TTF
+
+  Dessin
+    ≈ ≠ ≤ ≥ remontés de 64 unités, à la hauteur de = < >
+
+  Fichiers
+    Date de modification des binaires gardée au 25 septembre 2026 par
+    SOURCE_DATE_EPOCH
+
+  Vérification
+    fontbakery 1.1.0, check-googlefonts, sur les deux TTF avec OFL.txt
+    à côté : identique à la version 1.001, module par module.
+    check_final.py, dix sections, 0 anomalie.
+
 
 1.001  27 septembre 2026  Observatoire de l'Expérimentation Animale
 

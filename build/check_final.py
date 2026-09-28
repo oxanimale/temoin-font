@@ -318,7 +318,12 @@ def section7(fontes=None):
 # d'Atkinson a la valeur pres. Ce qui doit crier, c'est un recouvrement NEUF,
 # ou un recouvrement connu qui GROSSIT.
 #
-# Les deux dernieres lignes sont les limites connues du soixante-quatrieme
+# L'alpha du soixante-treizieme tour est deux contours qui se recouvrent : la
+# panse du `o` et le trait courbe qui la traverse a droite (`complements`).
+# Les fondre casserait l'interpolation, comme pour le bras du O. Il est en fin
+# de table.
+#
+# Les quatre lignes de `brevecomb` et `tildecomb` sont les limites connues du soixante-quatrieme
 # tour, fermeture du point 107 : `brevecomb` et `tildecomb` se recoupent a une
 # position sur cinq, de 0,004 a 0,113 % de leur encre, soit trente fois moins
 # que le bras du `O` que le projet sert et assume. Invisibles a 18 px comme a
@@ -331,6 +336,8 @@ RECOUVREMENTS_CONNUS = {
     ("italique", "brevecomb"):   (0.113, 1, "limite connue, soixante-quatrieme tour, point 107"),
     ("romain",   "tildecomb"):   (0.081, 1, "limite connue, soixante-quatrieme tour, point 107"),
     ("italique", "tildecomb"):   (0.004, 1, "limite connue, soixante-quatrieme tour, point 107"),
+    ("romain",   "alpha"):       (18.988, 5, "panse du o et trait croise, soixante-treizieme tour, VOULU"),
+    ("italique", "alpha"):       (18.872, 5, "panse du o et trait croise, soixante-treizieme tour, VOULU"),
 }
 
 # En dessous, c'est du bruit numerique de la rasterisation vectorielle.

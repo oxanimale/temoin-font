@@ -33,7 +33,8 @@ en texte a 18 px puis a 190 px :
 
 CE QUI MONTE : `plus minus divide multiply equal less greater asciitilde`, le
 `plus` repartant du dessin d'Atkinson, sa plongee retiree par
-`lot4.PRESCRIPTIONS["plus"]`.
+`lot4.PRESCRIPTIONS["plus"]`. DOUZE DEPUIS LE SOIXANTE-TREIZIEME TOUR :
+`approxequal notequal lessequal greaterequal` suivent, decision de Nicolas.
 
 CE QUI NE MONTE PAS, ET C'EST UNE DECISION : le `plusminus`, le `hyphen`, le
 `endash` et le `emdash`. La ponctuation reste a 248. Le `plusminus` et le
@@ -98,7 +99,12 @@ import lot2 as L
 #: chaque appel par `appliquer`, et non suppose -- une police qui change de
 #: version peut changer de composition.
 OPERATEURS = ("plus", "minus", "divide", "multiply", "equal", "less",
-              "greater", "asciitilde")
+              "greater", "asciitilde",
+              # SOIXANTE-TREIZIEME TOUR : les quatre qui manquaient. Le ≈
+              # entre au servi ; le ≠, le ≤ et le ≥ y etaient deja, 64 unites
+              # sous le = et le <, sans qu'aucun document le dise. Nicolas les
+              # remonte tous les quatre, sur `planche-tour73-complements.png`.
+              "approxequal", "notequal", "lessequal", "greaterequal")
 
 #: De combien ils montent. Constante et non par master : Nicolas a tranche 64
 #: sur des binaires compiles, apres avoir compare 90 et 32 sur la meme page.

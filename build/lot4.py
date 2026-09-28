@@ -2647,6 +2647,11 @@ HORS_TITRAGE = frozenset({
     # titrage, et le partage se defend par la mesure : le + deplace son bout de
     # 32 a 47 unites, l'ordre du depassement, quand le ≠ en deplace 68.
     "greaterequal", "lessequal", "notequal",
+    # SOIXANTE-TREIZIEME TOUR : le mu et le Delta entrent au servi, donc au
+    # perimetre. Le geste inclinait toute la base du Delta, le regime deja
+    # ecarte ici ; Nicolas refuse la coupe sur les deux, au vu de
+    # `planche-tour73-complements.png`. Le micro copie le mu, donc la suit.
+    "mu", "Delta",
     # Le point d'interrogation. Le renverse suit, pour que la paire ? / ¿ garde
     # une terminaison commune -- et le geste ne le deplacait d'aucune unite.
     "question", "questiondown",
