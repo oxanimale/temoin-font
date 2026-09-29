@@ -4,7 +4,7 @@ Police de caractères de l'Observatoire de l'Expérimentation Animale, pour le
 site oxanimale.fr et ses documents.
 
 Témoin est une version modifiée d'**Atkinson Hyperlegible Next**, publiée sous
-SIL Open Font License 1.1. Version 1.002, 27 septembre 2026.
+SIL Open Font License 1.1. Version 1.003, 29 septembre 2026.
 
 Quatre fichiers variables, romain et italique :
 
@@ -60,11 +60,25 @@ fichier.
 - **Exposants ᵉ et ʳ**, pour XIXᵉ et 1ᵉʳ. Atkinson dessine son º comme un o
   pris plus gras, réduit et monté : la règle se mesure sur le couple o / º et
   s'applique au e et au r.
+- **Formes pleines** ▲ ● ⬤ ■ ►, absentes d'Atkinson, construites pour les
+  symboles du site. ● et ⬤ ont le diamètre des ronds que le site dessinait en
+  CSS, 0,45 em et 1 em, ■ la surface de ●, ► la hauteur de ■, et ▲ celle des
+  étoiles. Comme les étoiles, elles restent droites en italique et identiques
+  à toutes les graisses.
+- **Croix ✕** U+2715 : le signe × agrandi de la ligne de base à la hauteur des
+  capitales, à son trait.
+- **Flèches ← et ↩** : ← est la flèche → retournée. ↩ reprend sa tête et sa
+  hampe, et finit par un crochet en demi-cercle qui monte à la hauteur des
+  capitales. Toutes deux penchent en italique, comme →.
+- **Point souscrit** : Ḥ ḥ Ṭ ṭ, pour la translittération de l'arabe. Le point
+  est celui du point suscrit, à la même profondeur sous les quatre lettres,
+  pour qu'une ligne garde ses points alignés.
 - **Opérateurs mathématiques** remontés de 64 unités par rapport à Atkinson :
   + − × ÷ = < > ~ ≈ ≠ ≤ ≥.
-- **Codes ajoutés sans dessin** : le trait d'union U+2010 et le trait d'union
-  insécable U+2011 ont le dessin du trait d'union, l'incrément U+2206 celui
-  du Δ.
+- **Codes ajoutés sans dessin** : le trait d'union U+2010, le trait d'union
+  insécable U+2011 et le tiret-puce U+2043 ont le dessin du trait d'union,
+  l'incrément U+2206 celui du Δ, le point U+2981 celui de la puce •, et la
+  lettre modificative ᵒ U+1D52 celui du º.
 
 ## Ce que le projet ne revendique pas
 
@@ -97,10 +111,10 @@ une version modifiée, et l'OXA ne les a pas fait vérifier.
 Le dossier `fonts/` porte deux formats.
 
 ```
-Temoin.woff2               web, graisse 400 à 800, 322 glyphes, 40 Ko
-Temoin-Italic.woff2        web, graisse 400 à 800, 322 glyphes, 43 Ko
-Temoin[wght].ttf           installation, graisse 200 à 800, 447 glyphes
-Temoin-Italic[wght].ttf    installation, graisse 200 à 800, 447 glyphes
+Temoin.woff2               web, graisse 400 à 800, 335 glyphes, 41 Ko
+Temoin-Italic.woff2        web, graisse 400 à 800, 335 glyphes, 44 Ko
+Temoin[wght].ttf           installation, graisse 200 à 800, 459 glyphes
+Temoin-Italic[wght].ttf    installation, graisse 200 à 800, 459 glyphes
 ```
 
 Les gabarits de pages de l'OXA emploient les graisses 400 à 700, et retirer
@@ -142,10 +156,10 @@ fonts/               les deux WOFF2, les deux TTF et une copie de la licence
 build/               les sources .glyphs et la chaîne complète
 ```
 
-`build/` porte 64 modules Python, plus `faire_depot.py`, le script qui assemble
+`build/` porte 65 modules Python, plus `faire_depot.py`, le script qui assemble
 ce dépôt : la chaîne de compilation, les contrôles, et les producteurs des
-tables d'espacement. Le dossier de travail du projet compte 198 fichiers
-Python. Les 133 écartés sont des balayages, des générateurs de planches et des
+tables d'espacement. Le dossier de travail du projet compte 200 fichiers
+Python. Les 134 écartés sont des balayages, des générateurs de planches et des
 essais, qu'aucun module publié n'importe. `faire_depot.py` porte la liste
 retenue, dit pourquoi chaque écarté l'est, et vérifie à chaque passage
 qu'aucun module publié n'appelle un module absent.
@@ -222,7 +236,7 @@ cd build
 python3 check_final.py            # dix sections
 python3 check_final.py --temoin   # treize mesures, aucune muette
 python3 check_approches.py        # espacement et crénage
-python3 check_crees.py            # les 55 glyphes créés
+python3 check_crees.py            # les 67 glyphes créés
 ```
 
 Avec `TEMOIN_BUILD` exporté comme ci-dessus. `check_final.py` lit les deux

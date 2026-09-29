@@ -21,8 +21,9 @@ site et ses documents. Elle ajoute un zéro contextuel, un système de coupes de
 terminaison, 44 petites capitales, cinq tables d'espacement et de crénage,
 l'espace fine insécable U+202F, un bras au O capitale, un partage de la
 barre médiane du F et de l'E dans les graisses grasses, les étoiles pleine et
-vide U+2605 et U+2606, le signe micro U+00B5, les lettres grecques α et β, la
-flèche U+2192 et les exposants ᵉ et ʳ.
+vide U+2605 et U+2606, le signe micro U+00B5, les lettres grecques α et β, les
+flèches U+2192, U+2190 et U+21A9, les exposants ᵉ et ʳ, cinq formes pleines,
+la croix U+2715 et quatre lettres à point souscrit.
 
 Le projet ne revendique ni l'accessibilité ni la lisibilité de Témoin. Les
 propriétés de la police de base ne se transmettent pas automatiquement à une
@@ -30,14 +31,44 @@ version modifiée, et l'OXA ne les a pas fait vérifier.
 
   Quatre fichiers variables, romain et italique, 1000 unités par em
   Deux TTF, axe de graisse wght 200 à 800, défaut 400, sept instances
-  nommées d'ExtraLight à ExtraBold, 447 glyphes
+  nommées d'ExtraLight à ExtraBold, 459 glyphes
   Deux WOFF2 pour le web, axe 400 à 800, défaut 400, cinq instances
-  nommées de Regular à ExtraBold, 322 glyphes, sous-ensemblés au latin
+  nommées de Regular à ExtraBold, 335 glyphes, sous-ensemblés au latin
   français, plus les lettres grecques et les signes qu'emploie le site
 
 
 Historique des versions
 -----------------------
+
+1.003  29 septembre 2026  Observatoire de l'Expérimentation Animale
+
+  Répertoire
+    Formes pleines, construites pour les symboles du site : ● U+25CF et
+    ⬤ U+2B24 au diamètre des ronds que le site dessinait en CSS, 0,45 em
+    et 1 em ; ■ U+25A0 de la surface de ● ; ► U+25BA de la hauteur de ■ ;
+    ▲ U+25B2 à la hauteur des étoiles. Droites en italique, identiques à
+    toutes les graisses
+    Croix ✕ U+2715 : le signe × agrandi de la ligne de base à la hauteur
+    des capitales, à son trait
+    Flèche ← U+2190 : la flèche U+2192 retournée. Flèche ↩ U+21A9 : même
+    tête, même hampe, crochet en demi-cercle jusqu'à la hauteur des
+    capitales
+    Ḥ U+1E24, ḥ U+1E25, Ṭ U+1E6C, ṭ U+1E6D : la lettre et le point du point
+    suscrit, à la même profondeur sous les quatre lettres
+    U+2043 sur le trait d'union, U+2981 sur la puce, ᵒ U+1D52 sur le º
+    ˙ U+02D9 entre dans les WOFF2, avec le dessin d'Atkinson : 335 glyphes,
+    459 dans les TTF
+
+  Fichiers
+    Date de modification des binaires gardée au 25 septembre 2026 par
+    SOURCE_DATE_EPOCH
+
+  Vérification
+    fontbakery 1.1.0, check-googlefonts, sur les deux TTF avec OFL.txt
+    à côté : identique à la version 1.002, module par module.
+    check_final.py, dix sections, 0 anomalie. check_crees.py, dix
+    sections, 67 glyphes créés, 0 anomalie.
+
 
 1.002  27 septembre 2026  Observatoire de l'Expérimentation Animale
 

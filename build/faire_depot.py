@@ -17,9 +17,10 @@ au soixante-sixieme tour et figee ici.
                     lisent le banc d essai
     les producteurs des six tables generees
 
-64 modules, plus ce script, sur 198 fichiers .py au soixante-treizieme
-tour, `complements` entre (63 sur 195 au soixante-douzieme avec `etoiles`,
-62 sur 193 au soixante-et-onzieme, 63 sur 190 au soixante-sixieme). Les 133
+65 modules, plus ce script, sur 200 fichiers .py au soixante-quatorzieme
+tour, `symboles` entre (64 sur 198 au soixante-treizieme avec `complements`,
+63 sur 195 au soixante-douzieme avec `etoiles`,
+62 sur 193 au soixante-et-onzieme, 63 sur 190 au soixante-sixieme). Les 134
 ecartes sont des
 balayages, des generateurs de planches et des essais, qu aucun module
 retenu n importe. Le script
@@ -59,7 +60,7 @@ DEPOT = os.path.join(PROJET, "depot-temoin-font")
 # Ce que le depot porte
 # ------------------------------------------------------------------
 
-# Les 64 modules de build/, fermeture transitive des imports.
+# Les 65 modules de build/, fermeture transitive des imports.
 MODULES = """
 abaisse_U approches balayage_lot4 balayage_lot4b barre_F barre_mediane
 bras_O check3 check4 check5 check_O check_U check_approches
@@ -72,7 +73,7 @@ lot2 lot3 lot4 make_temoin mesure_O mesure_bouts mesure_haut_titrage
 mesure_point18 mesure_point66 mesure_sortante_lot mesure_titrage
 operateurs paires_F paires_bouts paires_contacts paires_pieds
 pointe_sommet reglage_ae reglage_xa
-shape_check shape_check3 shape_check_kern souscrits subset termes
+shape_check shape_check3 shape_check_kern souscrits subset symboles termes
 zero_reconstruct
 """.split()
 

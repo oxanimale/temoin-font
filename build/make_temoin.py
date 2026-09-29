@@ -68,6 +68,9 @@ import descente_j as DJ
 # les gestes precedents, pour que `check_crees` puisse le rejouer.
 import etoiles as ET
 import complements as CP
+# Les symboles du site, soixante-quatorzieme tour : formes pleines, croix,
+# fleche gauche et fleche a crochet, lettres a point souscrit. Voir `symboles`.
+import symboles as SY
 from glyphsLib.classes import GSComponent
 
 THETA = 20.0        # angle de coupe, lot 2
@@ -649,7 +652,9 @@ IDENTITE = {
 # pour une revision de la police d'origine. 1.001 au soixante-douzieme tour,
 # decision de Nicolas : les etoiles et le signe micro changent le repertoire,
 # et deux fichiers differents sous le meme numero ne se distingueraient plus.
-VERSION = (1, 2)
+# 1.002 au soixante-treizieme (repertoire des fiches), 1.003 au
+# soixante-quatorzieme (symboles du site).
+VERSION = (1, 3)
 
 AMONT_ATTENDU = {
     "copyrights": COPYRIGHT_AMONT,
@@ -902,6 +907,11 @@ def process(path, out_path):
     # alors tous les gestes du projet, et aucun des cinq noms n'est dans
     # l'amont. Voir `complements`.
     CP.appliquer(font, log)
+    # LES SYMBOLES DU SITE, soixante-quatorzieme tour : trois renvois de codes
+    # et douze glyphes construits. EN DERNIER, apres `complements`, dont la
+    # fleche sert de piece aux deux fleches neuves. Aucun des douze noms n'est
+    # dans l'amont. Voir `symboles`.
+    SY.appliquer(font, log)
     for x in jrn:
         if "plafond" in x:
             log.append((f"plafond {x['base']} {x['master']}",

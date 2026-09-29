@@ -75,6 +75,7 @@ from glyphsLib.classes import GSPath
 
 import bras_O as BO
 import complements as CP
+import symboles as SY
 import dessin as D
 import etoiles as ET
 import lot3
@@ -90,13 +91,14 @@ SOURCES = [("roman", os.path.join(ICI, "Temoin.glyphs"),
 #: LES SIX CREATIONS QUI NE SONT PAS DES PETITES CAPITALES. Elles sont
 #: nommees ici parce que `make_temoin` ne les porte dans aucune table -- elles
 #: naissent dans le corps de `add_slashless`, `add_narrow_nbspace`,
-#: `add_micro`, `etoiles.appliquer` et `complements.appliquer`. Une liste ecrite a la main se perime
+#: `add_micro`, `etoiles.appliquer`, `complements.appliquer` et `symboles.appliquer`
+#: (soixante-quatorzieme tour). Une liste ecrite a la main se perime
 #: sans que rien ne le dise, et ce projet l'a paye sur `VOISINS_F` : c'est
 #: exactement ce que la section 1 surveille, en comparant cette liste au
 #: repertoire reellement cree. Elle a mordu au soixante-douzieme tour sur les
 #: trois noms neufs, avant que la section 8 ne les prenne.
 AUTRES_CREES = ("zero.slashless", "zero.tf.slashless", "narrownbspace",
-                ET.PLEINE, ET.VIDE, "micro") + CP.NEUFS
+                ET.PLEINE, ET.VIDE, "micro") + CP.NEUFS + SY.NEUFS
 
 #: Le rapport de derivation du lot 3. LU chez `make_temoin` et jamais recopie :
 #: deux definitions du meme nombre finissent par vivre dans deux fichiers, et
@@ -622,6 +624,81 @@ def section9(servi):
             + lignes), n
 
 
+def section10(servi):
+    """[REJEU] Les douze glyphes des symboles du site, soixante-quatorzieme
+    tour, sont ce que `symboles.calques` rend depuis la source SERVIE, a la
+    variante arretee ; leurs codes et leurs groupes sont ceux du module, et
+    les trois renvois de codes sont poses.
+
+    Le rejeu relit les pieces servies (minus, greater, multiply, H, h, T, t,
+    dotaccentcomb) et les metriques des masters, comme le producteur.
+    """
+    lignes, n = [], 0
+    mids = {m.id: m.name for m in servi.masters}
+    grp = SY.groupes(servi)
+    for nom in SY.NEUFS:
+        g = servi.glyphs[nom]
+        if g is None:
+            return [f"10. symboles du site   [REJEU] NON MESURE : {nom} "
+                    "absent"], -1
+        if list(g.unicodes or []) != [SY.UNICODES[nom]]:
+            n += 1
+            lignes.append(f"  !! 10 {nom} : unicodes {g.unicodes}, attendu "
+                          f"{SY.UNICODES[nom]}")
+        if (g.leftKerningGroup, g.rightKerningGroup) != grp[nom]:
+            n += 1
+            lignes.append(f"  !! 10 {nom} : groupes {g.leftKerningGroup} / "
+                          f"{g.rightKerningGroup}, attendu {grp[nom]}")
+    for nom, codes in SY.RENVOIS.items():
+        g = servi.glyphs[nom]
+        portes = {u.upper() for u in ((g.unicodes if g else None) or [])}
+        if not set(codes) <= portes:
+            n += 1
+            lignes.append(f"  !! 10 renvoi {nom} : porte {sorted(portes)}, "
+                          f"attendu aussi {list(codes)}")
+    try:
+        rejeu, _j = SY.calques(servi, SY.VARIANTE_TRIANGLE)
+    except (KeyError, ValueError) as e:
+        return [f"10. symboles du site   [REJEU] NON MESURE : le producteur "
+                f"refuse la source servie ({e})"], -1
+    vus, pire = 0, 0.0
+    for nom in SY.NEUFS:
+        for lay in servi.glyphs[nom].layers:
+            if lay.layerId not in mids:
+                continue
+            m = mids[lay.layerId]
+            ref = rejeu[nom][lay.layerId]
+            vus += 1
+            if any(not isinstance(s_, GSPath) for s_ in lay.shapes):
+                n += 1
+                lignes.append(f"  !! 10 {nom} {m} : porte un composant")
+                continue
+            if lay.width != ref.width:
+                n += 1
+                lignes.append(f"  !! 10 {nom} {m} : chasse {lay.width}, rejeu "
+                              f"{ref.width}")
+            reel = _noeuds_chemins(lay.shapes)
+            attendu = _noeuds_chemins([s_ for s_ in ref.shapes
+                                       if isinstance(s_, GSPath)])
+            if len(reel) != len(attendu) or any(
+                    a[2] != b[2] for a, b in zip(reel, attendu)):
+                n += 1
+                lignes.append(f"  !! 10 {nom} {m} : {len(reel)} noeuds servis "
+                              f"pour {len(attendu)} rejoues, ou types differents")
+                continue
+            e = max((max(abs(a[0] - b[0]), abs(a[1] - b[1]))
+                     for a, b in zip(reel, attendu)), default=0.0)
+            pire = max(pire, e)
+            if e > TOL_REJEU:
+                n += 1
+                lignes.append(f"  !! 10 {nom} {m} : s'ecarte du rejeu de "
+                              f"{e:.2f} u")
+    return ([f"10. symboles du site   [REJEU] {vus} calques, plus grand ecart "
+             f"{pire:.2f} u ; triangle {SY.VARIANTE_TRIANGLE} ; renvois "
+             + ", ".join(f"{k} +{len(v)}" for k, v in SY.RENVOIS.items())]
+            + lignes), n
+
+
 def section7(servi):
     """[DECLARATION] Ce que ce controle ne couvre PAS, et pourquoi.
 
@@ -711,6 +788,10 @@ def temoin():
         ("9 alpha",     CP.ALPHA,         "noeud",       "section9"),
         ("9 fleche",    CP.FLECHE,        "noeud",       "section9"),
         ("9 exposant",  CP.EXP_R,         "noeud",       "section9"),
+        ("10 triangle", SY.TRIANGLE,      "noeud",       "section10"),
+        ("10 croix",    SY.CROIX,         "noeud",       "section10"),
+        ("10 crochet",  SY.CROCHET,       "noeud",       "section10"),
+        ("10 point",    "Hdotbelow",      "noeud",       "section10"),
     )
     faux = 0
     for etq, nom, quoi, cible in essais:
@@ -729,6 +810,7 @@ def temoin():
             "section6": lambda: section6(servi),
             "section8": lambda: section8(servi),
             "section9": lambda: section9(servi),
+            "section10": lambda: section10(servi),
         }
         ligne = []
         for clef, fn in res.items():
@@ -790,6 +872,7 @@ def main():
         blocs.append(section7(servi))
         blocs.append(section8(servi))
         blocs.append(section9(servi))
+        blocs.append(section10(servi))
         n = 0
         for lignes, k in blocs:
             for ligne in lignes:
